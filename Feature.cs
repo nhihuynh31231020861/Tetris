@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,25 +9,32 @@ namespace Thunghiem1
     internal class TetrisFigure
     {
         //FIGURES
-        public static int[,] Figure1 = new int[1, 4] { { 1, 1, 1, 1 } }; // ""  ----  "" line
-        public static int[,] Figure2 = new int[2, 2] { { 1, 1 }, { 1, 1 } }; // ""  [ ]  "" square
+        public static int[,] Figure1 = new int[1, 4] { { 1, 1, 1, 1 } }; // ""  ----  "" line    
+        public static int[,] Figure2 = new int[2, 2] { { 1, 1 }, { 1, 1 } }; // ""  [ ]  "" square          
         public static int[,] Figure3 = new int[2, 3] { { 0, 1, 0 }, { 1, 1, 1 } }; // ""  |-  "" T
         public static int[,] Figure4 = new int[2, 3] { { 0, 1, 1 }, { 1, 1, 0 } }; // ""  __|¯¯  "" S
         public static int[,] Figure5 = new int[2, 3] { { 1, 1, 0 }, { 0, 1, 1 } }; // ""  ¯¯|__  "" Z
         public static int[,] Figure6 = new int[2, 3] { { 1, 0, 0 }, { 1, 1, 1 } }; // ""  _|  "" J
         public static int[,] Figure7 = new int[2, 3] { { 0, 0, 1 }, { 1, 1, 1 } }; // ""  |_  "" L
 
-        
-
+       
         //List with all the figures
         public static List<int[,]> tetrisFigures = new List<int[,]>() { Figure1, Figure2, Figure3, Figure4, Figure5, Figure6, Figure7 };
+        //Color
 
         //Display
         private int[,] block;
         public List<int[]> location = new List<int[]>();
         private bool isErect = false;
-
-
+        //static void DrawToMap( int[,] content, ConsoleColor color)
+        //{
+        //    Console.ForegroundColor = color;
+        //    Console.Write(content);
+        //}
+        //static void Color()
+        //{
+        //    DrawToMap(Figure1, color: ConsoleColor.Green);
+        //}
         //ctor of the Tetris Figure
         public TetrisFigure()
         {
@@ -37,7 +44,6 @@ namespace Thunghiem1
             Thune.DrawBorder();
             Thune.GetDashboard(1, 0, 0);
             ShowTetrisFigureOnDashboard();
-
         }
 
         //Show the next tetris figure to be displayed on screen
@@ -50,7 +56,7 @@ namespace Thunghiem1
                     if (block[i, j] == 1)
                     {
                         //Hiển thị khối tiếp theo
-                        Console.SetCursorPosition(((10 - block.GetLength(1)) / 2 + j) * 2 + 75, i + 13);
+                        Console.SetCursorPosition(((10 - block.GetLength(1)) / 2 + j) * 2 + 35, i + 13);
                         Console.Write(Thune.blockArea);
                     }
                 }
@@ -217,7 +223,6 @@ namespace Thunghiem1
 
         }
 
-        // we analize the figure when we want to transform it and it depends of the clock wise direction
         public int[] TransformMatrix(int[] coord, int[] axis, string dir)
         {
             int[] pcoord = { coord[0] - axis[0], coord[1] - axis[1] };
@@ -234,7 +239,6 @@ namespace Thunghiem1
         }
 
 
-        //check if there is something below, and the same for the other ones IS SOMETHING
         public bool isSomethingBelow()
         {
             for (int i = 0; i < 4; i++)
