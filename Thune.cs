@@ -1,7 +1,13 @@
-﻿using System;
+
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Features;
+using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +16,7 @@ namespace Thunghiem1
     internal class Thune
     {
         public static string blockArea = "■";   //1 khối
-        public static int rows = 0, score = 0, level = 1;   
+        public static int rows = 0, score = 0, level = 1;
         public static int[,] grid = new int[23, 16];
 
         //Repeated statics Atributes
@@ -28,41 +34,176 @@ namespace Thunghiem1
         //Movement
         public static ConsoleKeyInfo pressedKey;
         public static bool isKeyPressed = false;
-
-        static void Main()
+        public static List<Option> options;
+        public class Option
         {
-
-            DrawBorder();
+            public string Name { get; }
+            public Action Selected { get; }
+            public Option(string name, Action selected)
+            {
+                Name = name;
+                Selected = selected;
+            }
+        }
+        static void Main(string[] args)
+        {
+            
             GetMenu();
 
-            timer.Start();
-            dropTimer.Start();
+        }
+        static void GetMenu()
+        {
+            Console.WriteLine("Menu");
+            options = new List<Option>()
+            {
+                new Option("Instruction", () => Huongdan()),
+                new Option("StartGame", () => Game()),
+                new Option("Exit", () => Environment.Exit(0)),
+            };
+            int index = 0;
+            WriteMenu(options, options[index]);
 
-            nextTFig = new TetrisFigure();
-            tFig = nextTFig;
-            tFig.DisplayFigure();
-            nextTFig = new TetrisFigure();
+            // Store key info in here
+            ConsoleKeyInfo keyinfo;
+            do
+            {
+                keyinfo = Console.ReadKey();
 
-            RefreshConsole();
+                // Handle each key input (down arrow will write the menu again with a different selected item)
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (index + 1 < options.Count)
+                    {
+                        index++;
+                        WriteMenu(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (index - 1 >= 0)
+                    {
+                        index--;
+                        WriteMenu(options, options[index]);
+                    }
+                }
+                // Handle different action for the option
+                if (keyinfo.Key == ConsoleKey.Enter)
+                {
+                    options[index].Selected.Invoke();
+                    index = 0;
+                }
+            }
+            while (keyinfo.Key != ConsoleKey.X);
+
+            Console.ReadKey();
+        }
+        
+        static void WriteMenu(List<Option> options, Option selectedOption)
+        {
+
+            Console.Clear();
+            Console.SetCursorPosition(40, 7);
+            Console.WriteLine("Tetris");
+
+            Console.SetCursorPosition(0, 10);
+            foreach (Option option in options)
+            {
+                if (option == selectedOption)
+                {
+                    Console.Write("> ");
+                }
+                else
+                {
+                    Console.Write(" ");
+                }
+
+                Console.WriteLine(option.Name);
+            }
+
+        }
+
+        static void Huongdan()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(40, 10);
+           Console.WriteLine("Controls:                                " +
+                "\r\n                                             " +
+                "" +
+                "\r\n\t\t\t\t\t    [A] or [←] move left                     " +
+                "\r\n\t\t\t\t\t    [D] or [→] move right                    " +
+                "\r\n\t\t\t\t\t    [S] or [↓] fall faster                   " +
+                "\r\n\t\t\t\t\t    [Q] spin left                            " +
+                "\r\n\t\t\t\t\t    [E] spin right                           " +
+                "\r\n\t\t\t\t\t    [Spacebar] drop                          " +
+                "\r\n\t\t\t\t\t    [P] pause and resume                     " +
+                "\r\n\t\t\t\t\t    [Escape] close game                      " +
+                "\r\n\t\t\t\t\t    [Enter] start game  ");
+            ConsoleKeyInfo keyinfo;
+            keyinfo = Console.ReadKey();
+
+            if (keyinfo.Key == ConsoleKey.Escape)
+            {
+                GetMenu();
+            }
+        }
+        static void Game()
+        {
+            do
+            {
+                DrawBorder();
+
+
+                timer.Start();
+                dropTimer.Start();
+                nextTFig = new TetrisFigure();
+                tFig = nextTFig;
+                tFig.DisplayFigure();
+                nextTFig = new TetrisFigure();
+
+                RefreshConsole();
+                ConsoleKeyInfo keyinfo;
+                keyinfo = Console.ReadKey();
+
+                Console.SetCursorPosition(40, 20);
+                Console.WriteLine("Do you want to continue? Y/N");
+                Console.SetCursorPosition(40, 22);
+                string res = "" + Console.ReadLine();
+
+                if (res.ToUpper().Equals("N"))
+                {
+                    Console.WriteLine("Bye! See you again");
+                    GetMenu();
+                }
+                   for(int i = 0; i < 23; i++)
+                    {
+                        for (int j =0; j < 16; j++)
+                        {
+                            spawnedBlockLocation[i, j] = 0 ;
+                        }    
+                    }    
+                    
+               
+            } while (true);
+
 
         }
 
         //Vẽ map
         public static void DrawBorder()
         {
-            for (int lengthCount = 2; lengthCount <= 25; ++lengthCount)
+            for (int lengthCount = 0; lengthCount <= 23; ++lengthCount)
             {
-                Console.SetCursorPosition(40, lengthCount);
-                Console.Write("||");
-                Console.SetCursorPosition(72, lengthCount);
-                Console.Write("||");
+                Console.SetCursorPosition(0, lengthCount);
+                Console.Write("|");
+                Console.SetCursorPosition(33, lengthCount);
+                Console.Write("|");
             }
-            Console.SetCursorPosition(40, 25);
+            Console.SetCursorPosition(0, 23);
             for (int widthCount = 0; widthCount <= 16; widthCount++)
             {
                 Console.Write("--");
             }
-            Console.SetCursorPosition(40, 2);
+            Console.SetCursorPosition(0, 0);
             for (int widthCount = 0; widthCount <= 16; widthCount++)
             {
                 Console.Write("--");
@@ -71,9 +212,9 @@ namespace Thunghiem1
         }
 
         //Nhấn esc để thoát
-        public static void GetMenu()
+        /*public static void GetMenu()
         {
-
+            
             Console.SetCursorPosition(4, 5);
             Console.WriteLine("Nhan bat ky phim nao");
             Console.SetCursorPosition(5, 6);
@@ -86,18 +227,19 @@ namespace Thunghiem1
             {
                 Environment.Exit(0);
             }
-        }
+        }*/
+          
 
-        //Dashboard that shows score, level and the ammount of rows that you eliminate
-        public static void GetDashboard(int levels, int scores, int rowss)
+            //Dashboard that shows score, level and the ammount of rows that you eliminate
+            public static void GetDashboard(int levels, int scores, int rowss)
         {
-            Console.SetCursorPosition(80, 5);
+            Console.SetCursorPosition(40, 5);
             Console.WriteLine("Level : " + levels);
-            Console.SetCursorPosition(80, 7);
+            Console.SetCursorPosition(40, 7);
             Console.WriteLine("Score : " + scores);
-            Console.SetCursorPosition(80, 9);
+            Console.SetCursorPosition(40, 9);
             Console.WriteLine("Rows cleared : " + rowss);
-            Console.SetCursorPosition(80, 11);
+            Console.SetCursorPosition(40, 11);
             Console.WriteLine("Next figure : ");
         }
 
