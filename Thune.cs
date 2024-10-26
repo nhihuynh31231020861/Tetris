@@ -1,15 +1,14 @@
 
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Features;
-using DocumentFormat.OpenXml.Office.CustomUI;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Thunghiem1
 {
@@ -47,7 +46,7 @@ namespace Thunghiem1
         }
         static void Main(string[] args)
         {
-            
+
             GetMenu();
 
         }
@@ -97,7 +96,7 @@ namespace Thunghiem1
 
             Console.ReadKey();
         }
-        
+
         static void WriteMenu(List<Option> options, Option selectedOption)
         {
 
@@ -126,18 +125,18 @@ namespace Thunghiem1
         {
             Console.Clear();
             Console.SetCursorPosition(40, 10);
-           Console.WriteLine("Controls:                                " +
-                "\r\n                                             " +
-                "" +
-                "\r\n\t\t\t\t\t    [A] or [←] move left                     " +
-                "\r\n\t\t\t\t\t    [D] or [→] move right                    " +
-                "\r\n\t\t\t\t\t    [S] or [↓] fall faster                   " +
-                "\r\n\t\t\t\t\t    [Q] spin left                            " +
-                "\r\n\t\t\t\t\t    [E] spin right                           " +
-                "\r\n\t\t\t\t\t    [Spacebar] drop                          " +
-                "\r\n\t\t\t\t\t    [P] pause and resume                     " +
-                "\r\n\t\t\t\t\t    [Escape] close game                      " +
-                "\r\n\t\t\t\t\t    [Enter] start game  ");
+            Console.WriteLine("Controls:                                " +
+                 "\r\n                                             " +
+                 "" +
+                 "\r\n\t\t\t\t\t    [A] or [←] move left                     " +
+                 "\r\n\t\t\t\t\t    [D] or [→] move right                    " +
+                 "\r\n\t\t\t\t\t    [S] or [↓] fall faster                   " +
+                 "\r\n\t\t\t\t\t    [Q] spin left                            " +
+                 "\r\n\t\t\t\t\t    [E] spin right                           " +
+                 "\r\n\t\t\t\t\t    [Spacebar] drop                          " +
+                 "\r\n\t\t\t\t\t    [P] pause and resume                     " +
+                 "\r\n\t\t\t\t\t    [Escape] close game                      " +
+                 "\r\n\t\t\t\t\t    [Enter] start game  ");
             ConsoleKeyInfo keyinfo;
             keyinfo = Console.ReadKey();
 
@@ -164,25 +163,73 @@ namespace Thunghiem1
                 ConsoleKeyInfo keyinfo;
                 keyinfo = Console.ReadKey();
 
-                Console.SetCursorPosition(40, 20);
-                Console.WriteLine("Do you want to continue? Y/N");
-                Console.SetCursorPosition(40, 22);
-                string res = "" + Console.ReadLine();
+                //Console.SetCursorPosition(40, 20);
+                //Console.WriteLine("Do you want to continue? Y/N");
+                //Console.SetCursorPosition(40, 22);
+                //string res = "" + Console.ReadLine();
 
-                if (res.ToUpper().Equals("N"))
+                //if (res.ToUpper().Equals("Y"))
+                //{
+                //    for (int i = 0; i < 23; i++)
+                //    {
+                //        for (int j = 0; j < 16; j++)
+                //        {
+                //            spawnedBlockLocation[i, j] = 0;
+                //        }
+                //    }
+                //}
+                //if (res.ToUpper().Equals("N"))
+                //{
+                //    Console.WriteLine("Bye! See you again");
+                //    GetMenu();
+                //}
+                try
                 {
-                    Console.WriteLine("Bye! See you again");
-                    GetMenu();
-                }
-                   for(int i = 0; i < 23; i++)
-                    {
-                        for (int j =0; j < 16; j++)
+                    keyinfo = Console.ReadKey();
+
+                    Console.SetCursorPosition(40, 20);
+                        Console.WriteLine("Do you want to continue? Y/N");
+                        Console.SetCursorPosition(40, 22);
+                        string res = "" + Console.ReadLine();
+
+                        if (res.ToUpper().Equals("Y"))
                         {
-                            spawnedBlockLocation[i, j] = 0 ;
-                        }    
-                    }    
-                    
-               
+                            for (int i = 0; i < 23; i++)
+                            {
+                                for (int j = 0; j < 16; j++)
+                                {
+                                    spawnedBlockLocation[i, j] = 0;
+                                }
+                            }
+                            score = 0;
+                            rows = 0;
+                            level = 1;
+                        }
+                        else if (res.ToUpper().Equals("N"))
+                        {
+                            Console.SetCursorPosition(40, 24);
+                            Console.WriteLine("Bye! See you again");
+                            Environment.Exit(0);
+                        
+                        }
+                    else
+                        {
+                            Console.SetCursorPosition(40, 24);
+                            Console.WriteLine("Invalid input. Please enter 'Y' or 'N'.");
+                            break;
+                            
+                        }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Invalid input. Please enter 'Y' or 'N'.");
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+
+
+
             } while (true);
 
 
@@ -228,10 +275,10 @@ namespace Thunghiem1
                 Environment.Exit(0);
             }
         }*/
-          
 
-            //Dashboard that shows score, level and the ammount of rows that you eliminate
-            public static void GetDashboard(int levels, int scores, int rowss)
+
+        //Dashboard that shows score, level and the ammount of rows that you eliminate
+        public static void GetDashboard(int levels, int scores, int rowss)
         {
             Console.SetCursorPosition(40, 5);
             Console.WriteLine("Level : " + levels);
@@ -394,3 +441,75 @@ namespace Thunghiem1
         }
     }
 }
+//static void DrawTitle()
+//{
+//    Console.ForegroundColor = ConsoleColor.White;
+//    //Cố định phần hiển thị điểm ở vị trí (0, 0)
+//    Console.SetCursorPosition(0, 0);
+//    //Nhân 2 giá trị của width và in viền tại vị trí chia hết cho 2, tạo giãn cách kỹ tự theo chiều ngang
+//    for (int i = 0; i <= width * 2; i++)
+//    {
+//        Console.Write("▀");
+//    }
+//    Console.SetCursorPosition(0, 1);
+//    for (int i = 0; i <= width * 2; i++)
+//    {
+//        Console.Write(" ");
+//    }
+//    string textScore = "Điểm: " + score, textHighestScore = "Điểm cao nhất: " + highestScore + " ", textLevel = "Mức độ: " + level + " ";
+//    int x = 0, y = 1, gap = (width * 2 - (textScore.Length + textHighestScore.Length + textLevel.Length)) / 2;
+//    Console.SetCursorPosition(x, y);
+//    Console.WriteLine(textScore);
+//    x += textScore.Length + gap;
+//    Console.SetCursorPosition(x, y);
+//    Console.WriteLine(textLevel);
+//    x += textLevel.Length + gap;
+//    Console.SetCursorPosition(x, y);
+//    Console.WriteLine(textHighestScore);
+//}
+////Cập nhật điểm
+//static void AddScore(int increasedScore)
+//{
+//    //Thức ăn thường thì increasedScore = 1, thức ăn đặc biệt thì increasedScore = 2
+//    score += increasedScore * level;
+//    if (score > highestScore) highestScore = score;
+//    DrawTitle(); //Cập nhật điểm lên thanh tiêu đề
+
+//    //Ăn được 1 lần tốc độ tăng 5 (thời gian sleep giảm 5) đối với level 1, 2, tăng 10 đối với level 3, 4
+//    int levelSpeed = 5;
+//    if (level >= 3)
+//        levelSpeed = 10;
+//    int nextSpeed = snake.InitSpeed - score * levelSpeed;
+//    //Giới hạn tốc độ nhanh nhất là 100
+//    snake.SnakeSpeed = (nextSpeed >= 100) ? nextSpeed : 100;
+//}
+////Đọc điểm cao nhất từ file
+//static void ReadHighestScore()
+//{
+//    try
+//    {
+//        string highestScoreStr = File.ReadAllText("highestscore.txt");
+//        bool isValid = int.TryParse(highestScoreStr, out highestScore);
+//    }
+//    catch (Exception e)
+//    {
+//        highestScore = 0;
+//    }
+//}
+
+////Lưu điểm cao nhất vào file
+//static void SaveHighestScore()
+//{
+//    //Score nhỏ hơn highestScore thì không lưu vào file
+//    if (score < highestScore) return;
+//    //Bằng score
+//    try
+//    {
+//        File.WriteAllText("highestscore.txt", score.ToString());
+//        highestScore = score;
+//    }
+//    catch (Exception e)
+//    {
+
+//    }
+//}
