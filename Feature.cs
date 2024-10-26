@@ -17,10 +17,17 @@ namespace Thunghiem1
         public static int[,] Figure6 = new int[2, 3] { { 1, 0, 0 }, { 1, 1, 1 } }; // ""  _|  "" J
         public static int[,] Figure7 = new int[2, 3] { { 0, 0, 1 }, { 1, 1, 1 } }; // ""  |_  "" L
 
-       
+
         //List with all the figures
         public static List<int[,]> tetrisFigures = new List<int[,]>() { Figure1, Figure2, Figure3, Figure4, Figure5, Figure6, Figure7 };
         //Color
+        static void Color()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Figure1);
+            Console.ForegroundColor= ConsoleColor.Red;
+            Console.WriteLine(Figure2);
+        }
 
         //Display
         private int[,] block;
@@ -44,6 +51,7 @@ namespace Thunghiem1
             Thune.DrawBorder();
             Thune.GetDashboard(1, 0, 0);
             ShowTetrisFigureOnDashboard();
+            
         }
 
         //Show the next tetris figure to be displayed on screen
